@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout.html}">
+    <div layout:fragment="content">
+        <h1>운동 영상 리뷰 게시판</h1>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="/posts/save" role="button" class="btn btn-primary">글 등록</a>
+                    <div th:if="${userName}">
+                        Logged in as: <span id="user" th:text="${userName}"></span>
+                        <a th:href="@{/logout}" class="btn btn-info active" role="button">Logout</a>
+                    </div>
+                    <div th:unless="${userName}">
+                        <a th:href="@{/oauth2/authorization/google}" class="btn btn-success active" role="button">Google Login</a>
+                        <a th:href="@{/oauth2/authorization/naver}" class="btn btn-secondary active" role="button">Naver Login</a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- 목록 영역 출력 -->
+            <table class="table table-horizontal table-bordered">
+                <thead class="thead-strong">
+                <tr>
+                    <th>게시글번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>최종수정일</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                <tr th:each="post : ${posts}">
+                    <td th:text="${post.getId()}">게시글번호</td>
+                    <td><a th:href="@{/posts/update/{uid}(uid=${post.getId()})}" th:text="${post.getTitle()}">제목</a></td>
+                    <td th:text="${post.getAuthor()}">작성자</td>
+                    <td th:text="${post.getModifiedTime()}">최종수정일</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</html>
