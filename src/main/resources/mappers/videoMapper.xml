@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swb.web.dao.VideoDao">
+
+    <resultMap type="VideoDto" id="videoMap">
+        <result column="video_id" property="videoId"/>
+        <result column="user_id" property="userId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="reg_date" property="regDate"/>
+        <result column="view_cnt" property="viewCnt"/>
+        <result column="like_cnt" property="likeCnt"/>
+
+    </resultMap>
+
+    <select id="selectOne" resultMap="videoMap" parameterType="int">
+        SELECT *
+        FROM video
+        WHERE video_id = #{videoId}
+    </select>
+
+    <insert id="insertVideo" parameterType="VideoDto">
+        INSERT INTO video (user_id, category_id, title, writer, thumbnail, url)
+        VALUES (#{userId}, #{categoryId}, #{title}, #{writer}, #{thumbnail}, #{url})
+    </insert>
+
+    <delete id="deleteVideo" parameterType="int">
+        DELETE FROM video
+        WHERE video_id = #{videoId}
+    </delete>
+
+    <update id="updateVideo" parameterType="VideoDto">
+        UPDATE video
+        SET category_id = #{categoryId}, title = #{title}
+        WHERE video_id = #{videoId}
+    </update>
+
+    <!-- 검색기능  -->
+    <select id="search" resultMap="videoMap" parameterType="SearchCondition">
+        SELECT writer, title, view_cnt, like_cnt
+        FROM video
+        <!-- 검색 조건 (동적쿼리)-->
+        <if test="key != 'none'">
+            WHERE ${key} LIKE concat('%', #{word}, '%')
+        </if>
+        <!-- 어떤 기준으로 어떤 방향으로 정렬 -->
+        <if test="orderBy != 'none'">
+            ORDER BY ${orderBy} ${orderByDir}
+        </if>
+    </select>
+
+    <!-- 조회수, 좋아요 증가   -->
+    <update id="updateViewCnt" parameterType="int">
+        UPDATE video
+        SET view_cnt = view_cnt+1
+        WHERE video_id = #{videoId}
+    </update>
+
+    <update id="updateLikeCnt" parameterType="int">
+        UPDATE video
+        SET like_cnt = like_cnt+1
+        WHERE video_id = #{videoId}
+    </update>
+
+</mapper>
