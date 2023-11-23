@@ -38,7 +38,7 @@
 
     <!-- 검색기능  -->
     <select id="search" resultMap="videoMap" parameterType="SearchCondition">
-        SELECT writer, title, view_cnt, like_cnt
+        SELECT video_id, writer, title, thumbnail, view_cnt, like_cnt
         FROM video
         <!-- 검색 조건 (동적쿼리)-->
         <if test="categoryId > 1">
